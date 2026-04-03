@@ -12,11 +12,36 @@ const projectRoot = path.resolve(__dirname, '../..')
 
 const envProjectId = process.env.FIREBASE_PROJECT_ID
 const envClientEmail = process.env.FIREBASE_CLIENT_EMAIL
-const envPrivateKey = process.env.FIREBASE_PRIVATE_KEY
-  ? process.env.FIREBASE_PRIVATE_KEY.trim()
-      .replace(/^["']|["']$/g, '')
-      .replace(/\\n/g, '\n')
-  : undefined
+
+// Function to meticulously clean the private key string from common env-var formatting issues
+function cleanPrivateKey(key) {
+  if (!key) return undefined;
+  let formattedKey = key.trim();
+  
+  // 1. Remove outer quotes if they exist (common in Render/Vercel settings)
+  if (formattedKey.startsWith('"') && formattedKey.endsWith('"')) {
+    formattedKey = formattedKey.slice(1, -1);
+  }
+  if (formattedKey.startsWith("'") && formattedKey.endsWith("'")) {
+    formattedKey = formattedKey.slice(1, -1);
+  }
+
+  // 2. Handle literal \n strings (backslash + n) and convert them to real newlines
+  formattedKey = formattedKey.replace(/\\n/g, '\n');
+
+  // 3. Ensure the PEM format headers/footers are clean and standard
+  // Sometimes multiple newlines are appended, we want a clean single newline structure
+  formattedKey = formattedKey.trim();
+  
+  // PEM must end with a newline for some cert parsers
+  if (!formattedKey.endsWith('\n')) {
+    formattedKey += '\n';
+  }
+  
+  return formattedKey;
+}
+
+const envPrivateKey = cleanPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
 
 const firebaseServiceAccountPath =
   process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||

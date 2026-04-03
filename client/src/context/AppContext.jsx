@@ -178,6 +178,26 @@ export function AppProvider({ children }) {
     }
   }, [apiRequest])
 
+  const seedTransactions = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError('')
+
+      const data = await apiRequest('/transactions/seed', {
+        method: 'POST',
+      })
+
+      setTransactions(data.data || [])
+      return true
+    } catch (err) {
+      console.error('Seed transactions failed:', err)
+      setError(err.message || 'Could not seed transactions.')
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }, [apiRequest])
+
   const value = useMemo(
     () => ({
       transactions,
@@ -190,6 +210,7 @@ export function AppProvider({ children }) {
       addTransaction,
       editTransaction,
       deleteTransaction,
+      seedTransactions,
       loadTransactions,
       loading,
       error,
@@ -205,6 +226,7 @@ export function AppProvider({ children }) {
       addTransaction,
       editTransaction,
       deleteTransaction,
+      seedTransactions,
       loadTransactions,
     ]
   )

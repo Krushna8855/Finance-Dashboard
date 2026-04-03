@@ -4,7 +4,7 @@ import { CATEGORY_COLORS, formatDate, formatSignedAmount } from '../../utils/cal
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 
 export default function TransactionTable({ transactions, onEdit }) {
-  const { role, deleteTransaction } = useApp()
+  const { role, deleteTransaction, seedTransactions } = useApp()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [txToDelete, setTxToDelete] = useState(null)
 
@@ -27,8 +27,18 @@ export default function TransactionTable({ transactions, onEdit }) {
         </div>
         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">No transactions found</h3>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          Try adjusting your filters or switch to admin mode to add a new transaction.
+          {role === 'admin' 
+            ? 'Your transaction history is empty. Start fresh or seed the database with sample data.' 
+            : 'Try adjusting your filters or switch to admin mode to see more records.'}
         </p>
+        {role === 'admin' && (
+          <button
+            onClick={seedTransactions}
+            className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            🌱 Seed Sample Data
+          </button>
+        )}
       </div>
     )
   }
