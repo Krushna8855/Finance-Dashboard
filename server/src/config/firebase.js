@@ -107,7 +107,7 @@ if (hasFirebaseConfig) {
     auth = admin.auth()
     firebaseConfigSource = serviceAccountFromFile ? 'service-account-file' : 'environment'
   } catch (error) {
-    firebaseSetupError = `FAILED_TO_INITIALIZE: ${error.message} (Key Length: ${privateKey?.length || 0})`
+    firebaseSetupError = `FAILED_TO_INITIALIZE: ${error.message} (Cleaned Key Length: ${privateKey?.length || 0}) Header: [${privateKey?.substring(0, 15)}...]`
   }
 } else {
   firebaseSetupError =
