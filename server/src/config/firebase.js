@@ -13,7 +13,7 @@ const projectRoot = path.resolve(__dirname, '../..')
 const envProjectId = process.env.FIREBASE_PROJECT_ID
 const envClientEmail = process.env.FIREBASE_CLIENT_EMAIL
 const envPrivateKey = process.env.FIREBASE_PRIVATE_KEY
-  ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+  ? process.env.FIREBASE_PRIVATE_KEY.trim().replace(/^["']|["']$/g, '').replace(/\\n/g, '\n')
   : undefined
 
 const firebaseServiceAccountPath =
