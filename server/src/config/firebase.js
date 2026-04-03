@@ -13,7 +13,9 @@ const projectRoot = path.resolve(__dirname, '../..')
 const envProjectId = process.env.FIREBASE_PROJECT_ID
 const envClientEmail = process.env.FIREBASE_CLIENT_EMAIL
 const envPrivateKey = process.env.FIREBASE_PRIVATE_KEY
-  ? process.env.FIREBASE_PRIVATE_KEY.trim().replace(/^["']|["']$/g, '').replace(/\\n/g, '\n')
+  ? process.env.FIREBASE_PRIVATE_KEY.trim()
+      .replace(/^["']|["']$/g, '')
+      .replace(/\\n/g, '\n')
   : undefined
 
 const firebaseServiceAccountPath =
@@ -79,7 +81,7 @@ if (hasFirebaseConfig) {
     auth = admin.auth()
     firebaseConfigSource = serviceAccountFromFile ? 'service-account-file' : 'environment'
   } catch (error) {
-    firebaseSetupError = error.message
+    firebaseSetupError = `FAILED_TO_INITIALIZE: ${error.message} (Key Length: ${privateKey?.length || 0})`
   }
 } else {
   firebaseSetupError =

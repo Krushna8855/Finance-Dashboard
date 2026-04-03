@@ -4,7 +4,7 @@ import helmet from 'helmet'
 import compression from 'compression'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
-import transactionRoutes from './routes/transactionRoutes.js'
+import transactionRoutes from './routes/transactionRoutes.js';
 import {
   db,
   firebaseConfigSource,
@@ -14,8 +14,11 @@ import {
 
 const app = express()
 
+// Trust proxy for Render/Vercel (required for express-rate-limit)
+app.set('trust proxy', 1)
+
 // 1. CORS - MUST BE FIRST (before helmet, rate limiter, or any other response-sending middleware)
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,https://finance-dashboard-xi-blond.vercel.app')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean)
@@ -25,10 +28,10 @@ app.use(
     origin: (origin, callback) => {
       // Allow browser if no origin (like server-to-server or curl)
       if (!origin) return callback(null, true)
-      
+
       // Allow if origin is in allowed list or if '*' is in list
       const isAllowed = allowedOrigins.includes('*') || allowedOrigins.includes(origin)
-      
+
       if (isAllowed) {
         callback(null, true)
       } else {
@@ -56,8 +59,8 @@ app.use(express.json({ limit: '10kb' }))
 
 // 3. Rate Limiting (Production Only)
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later.' },
