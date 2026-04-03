@@ -23,8 +23,10 @@ function cleanPrivateKey(key) {
   // 1. Convert any escaped newlines to actual newlines
   let processed = key.replace(/\\n/g, '\n');
 
-  // 2. Extra safety: try to find the actual PEM delimiters
-  // This handles cases where people paste the key with surrounding quotes, JSON markers, or trailing characters
+  // 2. Remove any carriage returns (\r) which can corrupt DER parsing
+  processed = processed.replace(/\r/g, '');
+
+  // 3. Extra safety: try to find the actual PEM delimiters
   const startMarker = '-----BEGIN PRIVATE KEY-----';
   const endMarker = '-----END PRIVATE KEY-----';
   
@@ -38,7 +40,7 @@ function cleanPrivateKey(key) {
     processed = processed.trim().replace(/^["']|["']$/g, '');
   }
 
-  // 3. Final standard cleanup (trim and ensure single trailing newline)
+  // 4. Final standard cleanup (trim and ensure single trailing newline)
   return processed.trim() + '\n';
 }
 
@@ -82,7 +84,8 @@ try {
 const serviceAccount = serviceAccountFromFile?.serviceAccount
 const projectId = envProjectId || serviceAccount?.project_id
 const clientEmail = envClientEmail || serviceAccount?.client_email
-const privateKey = envPrivateKey || serviceAccount?.private_key
+const rawPrivateKey = envPrivateKey || serviceAccount?.private_key
+const privateKey = cleanPrivateKey(rawPrivateKey)
 
 const hasFirebaseConfig = Boolean(projectId && clientEmail && privateKey)
 
@@ -107,7 +110,7 @@ if (hasFirebaseConfig) {
     auth = admin.auth()
     firebaseConfigSource = serviceAccountFromFile ? 'service-account-file' : 'environment'
   } catch (error) {
-    firebaseSetupError = `FAILED_TO_INITIALIZE: ${error.message} (Cleaned Key Length: ${privateKey?.length || 0}) Header: [${privateKey?.substring(0, 15)}...]`
+    firebaseSetupError = `FAILED_TO_INITIALIZE: ${error.message} (Cleaned Key Length: ${privateKey?.length || 0}) Header: [${privateKey?.substring(0, 50)}...]`
   }
 } else {
   firebaseSetupError =

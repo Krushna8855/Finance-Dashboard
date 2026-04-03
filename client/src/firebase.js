@@ -40,24 +40,8 @@ async function tryAnonymousSignIn() {
 }
 
 export async function getAuthToken() {
-  const staticToken = import.meta.env.VITE_API_TOKEN
-
-  if (staticToken) {
-    return staticToken
-  }
-
-  const user = await tryAnonymousSignIn()
-
-  if (!user) {
-    return null
-  }
-
-  try {
-    return await user.getIdToken()
-  } catch (error) {
-    console.warn('Could not retrieve Firebase ID token.', error)
-    return null
-  }
+  // Standalone mode: Return a placeholder token to bypass backend auth entirely
+  return 'standalone-token'
 }
 
 export const setupAnalytics = async () => {

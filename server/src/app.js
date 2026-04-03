@@ -26,16 +26,21 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,https:
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow browser if no origin (like server-to-server or curl)
+      // 1. Allow if no origin (like server-to-server, curls, or dev apps)
       if (!origin) return callback(null, true)
 
-      // Allow if origin is in allowed list or if '*' is in list
+      // 2. Allow if origin matches exactly or if '*' is in list
       const isAllowed = allowedOrigins.includes('*') || allowedOrigins.includes(origin)
 
-      if (isAllowed) {
+      // 3. Robust subdomain allowance: Allow any Vercel preview/deployment or Localhost
+      const isVercel = origin.endsWith('.vercel.app')
+      const isLocal = origin.includes('localhost') || origin.includes('127.0.0.1')
+
+      if (isAllowed || isVercel || isLocal) {
         callback(null, true)
       } else {
-        callback(new Error('CORS_ERROR: Origin not allowed.'))
+        console.warn(`[CORS REJECTED] Origin: ${origin}. Allowed: ${allowedOrigins.join(', ')}`)
+        callback(new Error('CORS_ERROR: This origin is not allowed to access the API.'))
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -74,7 +79,7 @@ if (process.env.NODE_ENV === 'production') {
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Server is running (Logic Update v2.1: Key extraction enabled)',
+    message: 'Server is running (Logic Update v2.2: Flexible CORS & Root Routes enabled)',
     firestoreReady: Boolean(db),
     firebaseConfigured: hasFirebaseConfig,
     firebaseConfigSource,
@@ -85,7 +90,8 @@ app.get('/api/health', (req, res) => {
 })
 
 // 5. Routes
-app.use('/api', transactionRoutes)
+app.use('/api', transactionRoutes) // Standard route with prefix
+app.use(transactionRoutes)      // Fallback: allows requests without /api prefix for convenience
 
 // 6. Global Error Handler
 app.use((err, req, res, next) => {
