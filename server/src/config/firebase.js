@@ -13,32 +13,33 @@ const projectRoot = path.resolve(__dirname, '../..')
 const envProjectId = process.env.FIREBASE_PROJECT_ID
 const envClientEmail = process.env.FIREBASE_CLIENT_EMAIL
 
-// Function to meticulously clean the private key string from common env-var formatting issues
+/**
+ * Mega-robust Private Key Cleaner
+ * Extracts the PEM key using markers and handles all common env-var corruption.
+ */
 function cleanPrivateKey(key) {
   if (!key) return undefined;
-  let formattedKey = key.trim();
+
+  // 1. Convert any escaped newlines to actual newlines
+  let processed = key.replace(/\\n/g, '\n');
+
+  // 2. Extra safety: try to find the actual PEM delimiters
+  // This handles cases where people paste the key with surrounding quotes, JSON markers, or trailing characters
+  const startMarker = '-----BEGIN PRIVATE KEY-----';
+  const endMarker = '-----END PRIVATE KEY-----';
   
-  // 1. Remove outer quotes if they exist (common in Render/Vercel settings)
-  if (formattedKey.startsWith('"') && formattedKey.endsWith('"')) {
-    formattedKey = formattedKey.slice(1, -1);
-  }
-  if (formattedKey.startsWith("'") && formattedKey.endsWith("'")) {
-    formattedKey = formattedKey.slice(1, -1);
+  const startIndex = processed.indexOf(startMarker);
+  const endIndex = processed.indexOf(endMarker);
+  
+  if (startIndex !== -1 && endIndex !== -1) {
+    processed = processed.substring(startIndex, endIndex + endMarker.length);
+  } else {
+    // Fallback: Just remove common outer junk
+    processed = processed.trim().replace(/^["']|["']$/g, '');
   }
 
-  // 2. Handle literal \n strings (backslash + n) and convert them to real newlines
-  formattedKey = formattedKey.replace(/\\n/g, '\n');
-
-  // 3. Ensure the PEM format headers/footers are clean and standard
-  // Sometimes multiple newlines are appended, we want a clean single newline structure
-  formattedKey = formattedKey.trim();
-  
-  // PEM must end with a newline for some cert parsers
-  if (!formattedKey.endsWith('\n')) {
-    formattedKey += '\n';
-  }
-  
-  return formattedKey;
+  // 3. Final standard cleanup (trim and ensure single trailing newline)
+  return processed.trim() + '\n';
 }
 
 const envPrivateKey = cleanPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
