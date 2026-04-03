@@ -3,7 +3,11 @@ import { getAuthToken } from '../firebase'
 
 const AppContext = createContext()
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+
+if (import.meta.env.PROD && !API_BASE_URL) {
+  console.warn('VITE_API_BASE_URL is not defined. API requests will likely fail unless proxied.')
+}
 
 export function AppProvider({ children }) {
   const [transactions, setTransactions] = useState([])
@@ -66,13 +70,23 @@ export function AppProvider({ children }) {
         delete requestHeaders.Authorization
       }
 
-      return fetch(`${API_BASE_URL}${path}`, {
+      const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`
+
+      return fetch(url, {
         ...options,
         headers: requestHeaders,
+        credentials: 'include', // Important for CORS with credentials: true
       })
     }
 
-    let response = await sendRequest(Boolean(token))
+    let response
+    try {
+      response = await sendRequest(Boolean(token))
+    } catch (err) {
+      console.error('Network error:', err)
+      throw new Error('Network error. Please check if the backend is running and CORS is configured.')
+    }
+
     const shouldRetryWithoutAuth =
       token &&
       response.status === 401 &&

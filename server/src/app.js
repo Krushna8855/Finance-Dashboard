@@ -14,27 +14,7 @@ import {
 
 const app = express()
 
-// Security Middleware
-app.use(helmet())
-
-// Logging
-app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
-
-// Compression
-app.use(compression())
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
-})
-
-if (process.env.NODE_ENV === 'production') {
-  app.use('/api/', limiter)
-}
-
+// 1. CORS - MUST BE FIRST (before helmet, rate limiter, or any other response-sending middleware)
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
   .split(',')
   .map((origin) => origin.trim())
@@ -42,22 +22,52 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
 
 app.use(
   cors({
-    origin(origin, callback) {
-      // Allow if no origin (like server-to-server or curl) 
-      // or if allowedOrigins includes '*' 
-      // or if the specific origin is in allowedOrigins
-      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-        return callback(null, true)
+    origin: (origin, callback) => {
+      // Allow browser if no origin (like server-to-server or curl)
+      if (!origin) return callback(null, true)
+      
+      // Allow if origin is in allowed list or if '*' is in list
+      const isAllowed = allowedOrigins.includes('*') || allowedOrigins.includes(origin)
+      
+      if (isAllowed) {
+        callback(null, true)
+      } else {
+        callback(new Error('CORS_ERROR: Origin not allowed.'))
       }
-
-      return callback(new Error('CORS origin not allowed. ' + origin))
     },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     credentials: true,
+    maxAge: 86400, // Cache preflight response for 24 hours
   })
 )
 
-app.use(express.json({ limit: '10kb' })) // Hardened JSON limit
+// Handle preflight explicitly (optional but safe)
+app.options('*', cors())
 
+// 2. Security & Utilities
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false,
+}))
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
+app.use(compression())
+app.use(express.json({ limit: '10kb' }))
+
+// 3. Rate Limiting (Production Only)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' },
+})
+
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/', limiter)
+}
+
+// 4. Health Check
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -71,22 +81,28 @@ app.get('/api/health', (req, res) => {
   })
 })
 
+// 5. Routes
 app.use('/api', transactionRoutes)
 
+// 6. Global Error Handler
 app.use((err, req, res, next) => {
-  if (err.message === 'CORS origin not allowed.') {
+  console.error('API Error:', err)
+
+  if (err.message === 'CORS_ERROR: Origin not allowed.') {
     return res.status(403).json({
       success: false,
-      message: err.message,
+      message: 'CORS Blocked: This origin is not allowed to access the API.',
+      hint: 'Configure CORS_ORIGIN on the server to include your frontend URL.',
     })
   }
 
-  return res.status(500).json({
+  return res.status(err.status || 500).json({
     success: false,
-    message: 'Internal server error.',
+    message: err.message || 'Internal server error.',
   })
 })
 
+// 7. 404 Handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
