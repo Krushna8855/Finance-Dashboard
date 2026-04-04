@@ -1,3 +1,4 @@
+import { Activity } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import TransactionTable from '../components/transactions/TransactionTable'
 import FilterBar from '../components/transactions/FilterBar'
@@ -5,9 +6,49 @@ import AddTransactionModal from '../components/transactions/AddTransactionModal'
 import DeleteConfirmationModal from '../components/transactions/DeleteConfirmationModal'
 import { useApp } from '../context/AppContext'
 import { fmt } from '../utils/calculations'
+import Hyperspeed from '../components/common/Hyperspeed'
+import PixelSnow from '../components/common/PixelSnow'
+import BorderGlow from '../components/common/BorderGlow'
 
 export default function Transactions() {
   const { transactions, filters, role, deleteTransaction } = useApp()
+
+  const hyperspeedOptions = {
+    distortion: 'LongRaceDistortion',
+    length: 300,
+    roadWidth: 10,
+    islandWidth: 5,
+    lanesPerRoad: 2,
+    fov: 90,
+    fovSpeedUp: 150,
+    speedUp: 2,
+    carLightsFade: 0.4,
+    totalSideLightSticks: 20,
+    lightPairsPerRoadWay: 40,
+    shoulderLinesWidthPercentage: 0.05,
+    brokenLinesWidthPercentage: 0.1,
+    brokenLinesLengthPercentage: 0.5,
+    lightStickWidth: [0.12, 0.5],
+    lightStickHeight: [1.3, 1.7],
+    movingAwaySpeed: [60, 80],
+    movingCloserSpeed: [-120, -160],
+    carLightsLength: [300 * 0.05, 300 * 0.15],
+    carLightsRadius: [0.05, 0.14],
+    carWidthPercentage: [0.3, 0.5],
+    carShiftX: [-0.2, 0.2],
+    carFloorSeparation: [0.05, 1],
+    colors: {
+      roadColor: 0x080808,
+      islandColor: 0x0a0a0a,
+      background: 0x000000,
+      shoulderLines: 0x131318,
+      brokenLines: 0x131318,
+      leftCars: [0xff5f73, 0xe11d48, 0xbe123c],
+      rightCars: [0x38bdf8, 0x0ea5e9, 0x0284c7],
+      sticks: 0xff5f73
+    }
+  }
+
   const [modalOpen, setModalOpen] = useState(false)
   const [editData, setEditData] = useState(null)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -65,77 +106,92 @@ export default function Transactions() {
   }
 
   return (
-    <div className="space-y-6 lg:space-y-8">
-      <section className="surface-panel overflow-hidden p-5 sm:p-6">
-        <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr] xl:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-blue-600 dark:text-blue-400">
-              Transaction Workspace
-            </p>
-            <h1 className="mt-3 text-3xl font-bold text-slate-900 dark:text-white">Explore and manage activity</h1>
-            <p className="mt-3 max-w-3xl text-sm text-slate-500 dark:text-slate-400">
-              Review every finance entry with search, filters, sorting, and role-based actions. The viewer role can
-              inspect records, while the admin role can create and edit transactions for demonstration.
+    <div className="space-y-6 lg:space-y-10">
+      <section className="relative overflow-hidden rounded-[3rem] bg-slate-950 px-8 py-10 text-white shadow-2xl">
+        <div className="absolute inset-0 z-0 opacity-40">
+          <Hyperspeed effectOptions={hyperspeedOptions} />
+        </div>
+
+        {/* PixelSnow Side Animation */}
+        <div className="absolute left-0 top-0 z-10 h-full w-1/3 opacity-15 pointer-events-none">
+          <PixelSnow
+            color="#3b82f6"
+            flakeSize={0.005}
+            minFlakeSize={1}
+            pixelResolution={120}
+            speed={0.8}
+            density={0.15}
+            direction={125}
+            brightness={0.8}
+            depthFade={10}
+            farPlane={25}
+            gamma={0.5}
+            variant="snowflake"
+          />
+        </div>
+
+        <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-900/40 to-slate-950/90" />
+
+        <div className="relative z-20 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.3em] text-blue-400">
+              <Activity size={12} className="fill-current" />
+              <span>Transaction Workspace</span>
+            </div>
+            <h1 className="mt-4 text-4xl font-black tracking-tighter sm:text-5xl">
+              Audit and refine <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">every entry.</span>
+            </h1>
+            <p className="mt-3 text-sm font-medium leading-relaxed text-slate-400 sm:text-base opacity-70">
+              Institutional-grade ledger management. Search, pivot, and verify liquidity in real-time.
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-3">
-              <div className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300">
-                <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span> visible records
+            <div className="mt-6 flex flex-wrap gap-3">
+              <div className="rounded-xl border border-white/5 bg-white/10 px-5 py-2 backdrop-blur-xl shadow-xl">
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Live Volume</p>
+                <p className="mt-0.5 text-lg font-black text-white leading-none">{fmt(totalVolume)}</p>
               </div>
-              <div className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300">
-                <span className="font-semibold text-emerald-600 dark:text-emerald-300">{incomeCount}</span> income
-              </div>
-              <div className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300">
-                <span className="font-semibold text-rose-600 dark:text-rose-300">{expenseCount}</span> expense
+              <div className="rounded-xl border border-white/5 bg-white/10 px-5 py-2 backdrop-blur-xl shadow-xl">
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Records</p>
+                <p className="mt-0.5 text-lg font-black text-blue-400 leading-none">{filtered.length}</p>
               </div>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
-            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Role mode</p>
-              <p className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{role === 'admin' ? 'Admin' : 'Viewer'}</p>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                {role === 'admin' ? 'Can add, edit, and delete transactions.' : 'Can review data in read-only mode.'}
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Transaction volume</p>
-              <p className="mt-2 text-xl font-bold text-slate-900 dark:text-white">{fmt(totalVolume)}</p>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Aggregate amount in current filtered view.</p>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950/70">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Quick action</p>
-              <button
-                onClick={openAdd}
-                disabled={role !== 'admin'}
-                className="mt-3 inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
-              >
-                {role === 'admin' ? 'Add Transaction' : 'Admin role required'}
-              </button>
-            </div>
+          <div className="lg:w-1/4">
+            <button
+              onClick={openAdd}
+              disabled={role !== 'admin'}
+              className="flex w-full items-center justify-center gap-3 rounded-[2rem] bg-white px-8 py-5 text-sm font-black uppercase tracking-widest text-slate-950 shadow-2xl transition-all hover:scale-[1.05] hover:bg-slate-50 active:scale-95 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/40"
+            >
+              {role === 'admin' ? (
+                <>
+                  <Activity size={18} />
+                  New Record
+                </>
+              ) : 'Admin Only'}
+            </button>
           </div>
         </div>
       </section>
 
-      <section className="surface-panel p-5 sm:p-6">
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="section-title">Transaction Explorer</h2>
-            <p className="section-copy">Search by description, filter by type/category, and sort by date or amount.</p>
+      <BorderGlow borderRadius={32} glowRadius={60} glowColor="217 91 60" colors={['#3b82f6', '#1d4ed8', '#1e40af']} backgroundColor="rgba(15, 23, 42, 0.4)">
+        <section className="p-5 sm:p-6">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="section-title">Transaction Explorer</h2>
+              <p className="section-copy">Search by description, filter by type/category, and sort by date or amount.</p>
+            </div>
           </div>
-        </div>
 
-        <FilterBar />
-        <TransactionTable transactions={filtered} onEdit={openEdit} onDelete={handleDeleteClick} />
-      </section>
+          <FilterBar />
+          <TransactionTable transactions={filtered} onEdit={openEdit} onDelete={handleDeleteClick} />
+        </section>
+      </BorderGlow>
 
-      <AddTransactionModal 
-        open={modalOpen} 
-        onClose={() => setModalOpen(false)} 
-        editData={editData} 
+      <AddTransactionModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        editData={editData}
         onDelete={() => handleDeleteClick(editData)}
       />
 

@@ -27,10 +27,72 @@ const DUMMY_DATA = [
   { id: '20', date: '2026-02-10', desc: 'Movie Night', amount: 25.00, category: 'Entertainment', type: 'expense' },
 ]
 
+const DUMMY_GOALS = [
+  { id: 'g1', name: 'Tesla Model 3', current: 15400, target: 45000, color: 'blue' },
+  { id: 'g2', name: 'Summer Vacation', current: 2800, target: 5000, color: 'emerald' },
+  { id: 'g3', name: 'Emergency Fund', current: 8500, target: 10000, color: 'purple' },
+  { id: 'g4', name: 'New MacBook Pro', current: 400, target: 2400, color: 'rose' },
+  { id: 'g5', name: 'Home Renovation', current: 12000, target: 35000, color: 'blue' },
+  { id: 'g6', name: 'Retirement Fund', current: 50000, target: 1000000, color: 'emerald' },
+  { id: 'g7', name: 'Wedding Plannig', current: 5000, target: 20000, color: 'purple' },
+  { id: 'g8', name: 'World Tour', current: 1500, target: 15000, color: 'rose' },
+  { id: 'g9', name: 'Crypto Investment', current: 2000, target: 10000, color: 'blue' },
+  { id: 'g10', name: 'Charity Fund', current: 500, target: 2000, color: 'emerald' },
+  { id: 'g11', name: 'New iPhone', current: 800, target: 1200, color: 'blue' },
+  { id: 'g12', name: 'Gaming Rig', current: 1200, target: 3000, color: 'purple' },
+  { id: 'g13', name: 'Ski Trip', current: 3000, target: 5000, color: 'rose' },
+  { id: 'g14', name: 'Art Collection', current: 4500, target: 10000, color: 'emerald' },
+  { id: 'g15', name: 'Luxury Watch', current: 12000, target: 25000, color: 'blue' },
+  { id: 'g16', name: 'E-Bike', current: 1500, target: 2500, color: 'rose' },
+  { id: 'g17', name: 'Garden Greenhouse', current: 2000, target: 4000, color: 'emerald' },
+  { id: 'g18', name: 'Photography Gear', current: 3500, target: 7000, color: 'purple' },
+  { id: 'g19', name: 'Down Payment', current: 45000, target: 150000, color: 'blue' },
+  { id: 'g20', name: 'Business Startup', current: 10000, target: 50000, color: 'emerald' },
+  { id: 'g21', name: 'Furniture Upgrade', current: 2500, target: 6000, color: 'purple' },
+  { id: 'g22', name: 'Kitchen Gadgets', current: 500, target: 1500, color: 'rose' },
+  { id: 'g23', name: 'Fitness Equipment', current: 1200, target: 3000, color: 'blue' },
+  { id: 'g24', name: 'Reading Nook', current: 300, target: 1000, color: 'emerald' },
+  { id: 'g25', name: 'Masters Degree', current: 15000, target: 40000, color: 'purple' },
+  { id: 'g26', name: 'Tesla Powerwall', current: 2000, target: 12000, color: 'rose' },
+  { id: 'g27', name: 'Custom Suit', current: 1000, target: 2500, color: 'blue' },
+  { id: 'g28', name: 'Camping Gear', current: 800, target: 2000, color: 'emerald' },
+  { id: 'g29', name: 'Smart Home Hub', current: 1500, target: 5000, color: 'purple' },
+  { id: 'g30', name: 'Wine Cellar', current: 5000, target: 20000, color: 'rose' },
+  { id: 'g31', name: 'Solar Panels', current: 8000, target: 15000, color: 'blue' },
+  { id: 'g32', name: 'Project Car', current: 4000, target: 10000, color: 'emerald' },
+  { id: 'g33', name: 'New Sofa', current: 1500, target: 2500, color: 'purple' },
+  { id: 'g34', name: 'Drone', current: 600, target: 1200, color: 'rose' },
+  { id: 'g35', name: 'Pool Table', current: 2500, target: 5000, color: 'blue' },
+  { id: 'g36', name: 'Coffee Machine', current: 400, target: 1000, color: 'emerald' },
+  { id: 'g37', name: 'Backyard Deck', current: 7000, target: 15000, color: 'purple' },
+  { id: 'g38', name: 'Electric Guitar', current: 1200, target: 2500, color: 'rose' },
+  { id: 'g39', name: 'Mountain Bike', current: 2000, target: 4500, color: 'blue' },
+  { id: 'g40', name: 'Vinyl Records', current: 500, target: 1500, color: 'emerald' },
+  { id: 'g41', name: 'Spa Days', current: 1000, target: 2000, color: 'purple' },
+  { id: 'g42', name: 'Private Lessons', current: 1500, target: 4000, color: 'rose' },
+  { id: 'g43', name: 'Workshop Tools', current: 3000, target: 8000, color: 'blue' },
+  { id: 'g44', name: 'Aquarium Setup', current: 600, target: 1500, color: 'emerald' },
+  { id: 'g45', name: 'Designer Bags', current: 4000, target: 10000, color: 'purple' },
+  { id: 'g46', name: 'Home Theater', current: 5000, target: 15000, color: 'rose' },
+  { id: 'g47', name: 'Classic Car Fund', current: 15000, target: 60000, color: 'blue' },
+  { id: 'g48', name: 'Gaming Console', current: 300, target: 500, color: 'emerald' },
+  { id: 'g49', name: 'Luxury Mattress', current: 2500, target: 5000, color: 'purple' },
+  { id: 'g50', name: 'Designer Lighting', current: 1800, target: 4000, color: 'rose' },
+  { id: 'g51', name: 'Telescope', current: 1200, target: 2500, color: 'blue' },
+  { id: 'g52', name: 'Pizza Oven', current: 600, target: 1000, color: 'emerald' },
+  { id: 'g53', name: 'Surveillance System', current: 2000, target: 4500, color: 'purple' },
+  { id: 'g54', name: 'Electric Scooter', current: 800, target: 1500, color: 'rose' },
+]
+
 export function AppProvider({ children }) {
   const [transactions, setTransactions] = useState(() => {
     const saved = localStorage.getItem('fin_transactions')
     return saved ? JSON.parse(saved) : DUMMY_DATA
+  })
+
+  const [goals, setGoals] = useState(() => {
+    const saved = localStorage.getItem('fin_goals_v2')
+    return saved ? JSON.parse(saved) : DUMMY_GOALS
   })
 
   const [role, setRole] = useState(() => {
@@ -58,6 +120,10 @@ export function AppProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('fin_transactions', JSON.stringify(transactions))
   }, [transactions])
+
+  useEffect(() => {
+    localStorage.setItem('fin_goals_v2', JSON.stringify(goals))
+  }, [goals])
 
   useEffect(() => {
     localStorage.setItem('fin_role', role)
@@ -90,6 +156,17 @@ export function AppProvider({ children }) {
     return newTx
   }, [])
 
+  const addGoal = useCallback(async (goal) => {
+    const newGoal = {
+      ...goal,
+      id: `g${Date.now()}`,
+      current: parseFloat(goal.current || 0),
+      target: parseFloat(goal.target || 0),
+    }
+    setGoals((prev) => [newGoal, ...prev])
+    return newGoal
+  }, [])
+
   const editTransaction = useCallback(async (id, updated) => {
     let updatedObj = null
     setTransactions((prev) =>
@@ -112,12 +189,14 @@ export function AppProvider({ children }) {
   const seedTransactions = useCallback(async () => {
     // Re-seed with dummy data
     setTransactions(DUMMY_DATA)
+    setGoals(DUMMY_GOALS)
     return true
   }, [])
 
   const value = useMemo(
     () => ({
       transactions,
+      goals,
       role,
       setRole,
       filters,
@@ -125,6 +204,7 @@ export function AppProvider({ children }) {
       darkMode,
       toggleDarkMode,
       addTransaction,
+      addGoal,
       editTransaction,
       deleteTransaction,
       seedTransactions,
@@ -135,12 +215,14 @@ export function AppProvider({ children }) {
     }),
     [
       transactions,
+      goals,
       role,
       filters,
       darkMode,
       loading,
       error,
       addTransaction,
+      addGoal,
       editTransaction,
       deleteTransaction,
       seedTransactions,

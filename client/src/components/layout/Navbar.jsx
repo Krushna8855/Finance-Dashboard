@@ -1,6 +1,6 @@
 import { useApp } from '../../context/AppContext'
 
-export default function Navbar({ activePage, sidebarOpen, setSidebarOpen }) {
+export default function Navbar({ activePage, sidebarOpen, setSidebarOpen, onOpenPalette }) {
   const { role, darkMode, toggleDarkMode } = useApp()
 
   const titles = {
@@ -33,54 +33,61 @@ export default function Navbar({ activePage, sidebarOpen, setSidebarOpen }) {
           </button>
 
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-blue-600 dark:text-blue-400">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-blue-600 dark:text-blue-400 leading-none">
               FinanceIQ Workspace
             </p>
-            <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2 mt-0.5">
               <h1 className="truncate text-base font-bold text-slate-900 sm:text-lg dark:text-white">
                 {titles[activePage] ?? 'Dashboard'}
               </h1>
               <span className="hidden text-sm text-slate-400 sm:inline dark:text-slate-500">/</span>
-              <span className="hidden truncate text-sm text-slate-500 sm:inline dark:text-slate-400">
-                Professional finance control center
+              <span className="hidden truncate text-sm font-medium text-slate-500 sm:inline dark:text-slate-400">
+                Intel Pro Control
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
-          <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 md:flex dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            Live sync
-          </div>
-
-          <div
-            className={`hidden rounded-full border px-3 py-1.5 text-xs font-semibold sm:inline-flex ${
-              role === 'admin'
-                ? 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300'
-                : 'border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            {role === 'admin' ? 'Admin Access' : 'Viewer Mode'}
-          </div>
-
+        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4 md:gap-6">
           <button
-            type="button"
-            onClick={toggleDarkMode}
-            className="inline-flex h-11 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-700"
-            aria-label="Toggle dark mode"
+            onClick={onOpenPalette}
+            className="hidden h-10 w-48 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-400 transition hover:bg-slate-100 md:flex dark:border-white/5 dark:bg-slate-950/40 dark:hover:bg-slate-900"
           >
-            <span className="text-base">{darkMode ? '🌙' : '☀️'}</span>
-            <span className="hidden sm:inline">{darkMode ? 'Dark' : 'Light'}</span>
+            <div className="flex items-center gap-2">
+              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="7" cy="7" r="5" />
+                <path d="M11 11l4 4" />
+              </svg>
+              <span>Quick search...</span>
+            </div>
+            <kbd className="flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-black uppercase text-slate-400 border border-slate-200 dark:border-white/10 dark:bg-slate-800">
+              <span className="text-[8px]">ctrl</span>k
+            </kbd>
           </button>
 
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition hover:scale-105"
-            aria-label="User profile"
-          >
-            U
-          </button>
+          <div className="flex items-center gap-2 sm:gap-3">
+             <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 md:flex dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />
+              Live
+            </div>
+
+            <button
+              type="button"
+              onClick={toggleDarkMode}
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-lg transition hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+              aria-label="Toggle dark mode"
+            >
+              {darkMode ? '🌙' : '☀️'}
+            </button>
+
+            <button
+              type="button"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-650 text-sm font-black text-white shadow-lg shadow-blue-500/20 transition hover:scale-105 active:scale-95"
+              aria-label="User profile"
+            >
+              K
+            </button>
+          </div>
         </div>
       </div>
     </header>

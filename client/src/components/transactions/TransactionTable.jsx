@@ -1,27 +1,29 @@
 import { useApp } from '../../context/AppContext'
 import { CATEGORY_COLORS, formatDate, formatSignedAmount } from '../../utils/calculations'
+import { Edit2, Trash2, Database, ReceiptText } from 'lucide-react'
 
 export default function TransactionTable({ transactions, onEdit, onDelete }) {
   const { role, seedTransactions } = useApp()
 
   if (!transactions.length) {
     return (
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50/80 px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-900/50">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-3xl shadow-sm dark:bg-slate-800">
-          📭
+      <div className="premium-panel border-dashed border-slate-300 bg-slate-50/80 px-6 py-20 text-center dark:border-slate-800 dark:bg-slate-900/50">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-white text-3xl shadow-lg dark:bg-slate-950">
+          <ReceiptText className="h-10 w-10 text-slate-400" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">No transactions found</h3>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        <h3 className="text-xl font-black text-slate-900 dark:text-white">No activity detected</h3>
+        <p className="mx-auto mt-3 max-w-sm text-sm font-medium text-slate-500 dark:text-slate-400">
           {role === 'admin' 
-            ? 'Your transaction history is empty. Start fresh or seed the database with sample data.' 
-            : 'Try adjusting your filters or switch to admin mode to see more records.'}
+            ? 'Your ledger is currently sterile. Start adding records or seed with demo data.' 
+            : 'Audit history is currently empty for the current filter set.'}
         </p>
         {role === 'admin' && (
           <button
             onClick={seedTransactions}
-            className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+            className="mt-8 inline-flex items-center gap-3 rounded-2xl bg-slate-900 px-8 py-3.5 text-sm font-black uppercase tracking-widest text-white transition hover:scale-105 active:scale-95 dark:bg-white dark:text-slate-950"
           >
-            🌱 Seed Sample Data
+            <Database size={18} />
+            Seed Database
           </button>
         )}
       </div>
@@ -30,38 +32,37 @@ export default function TransactionTable({ transactions, onEdit, onDelete }) {
 
   return (
     <div className="w-full">
-      <div className="hidden overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950/60 lg:block">
-        <table className="w-full">
+      <div className="hidden overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-950/60 dark:shadow-none lg:block">
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/70">
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Date</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Description</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Category</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Amount</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Type</th>
+            <tr className="border-b border-slate-100 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/50">
+              <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Date</th>
+              <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Description</th>
+              <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Category</th>
+              <th className="px-6 py-5 text-left text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Amount</th>
               {role === 'admin' && (
-                <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Actions</th>
+                <th className="px-6 py-5 text-right text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Actions</th>
               )}
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {transactions.map((tx) => (
               <tr
                 key={tx.id}
-                className="border-b border-slate-100 transition hover:bg-slate-50/80 dark:border-slate-800 dark:hover:bg-slate-900/40"
+                className="group transition-colors hover:bg-slate-50/80 dark:hover:bg-white/[0.02]"
               >
-                <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">
+                <td className="px-6 py-5 text-sm font-medium text-slate-500 dark:text-slate-400">
                   {formatDate(tx.date)}
                 </td>
-                <td className="px-5 py-4">
-                  <p className="font-semibold text-slate-900 dark:text-white">{tx.desc}</p>
+                <td className="px-6 py-5">
+                  <p className="font-bold text-slate-900 dark:text-white">{tx.desc}</p>
                 </td>
-                <td className="px-5 py-4">
+                <td className="px-6 py-5">
                   <span
-                    className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
+                    className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[11px] font-black uppercase tracking-wider"
                     style={{
-                      background: `${CATEGORY_COLORS[tx.category] || '#6366f1'}20`,
+                      background: `${CATEGORY_COLORS[tx.category] || '#6366f1'}15`,
                       color: CATEGORY_COLORS[tx.category] || '#6366f1',
                     }}
                   >
@@ -72,36 +73,30 @@ export default function TransactionTable({ transactions, onEdit, onDelete }) {
                     {tx.category}
                   </span>
                 </td>
-                <td className="px-5 py-4">
-                  <span className={`text-sm font-bold ${tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300'}`}>
-                    {formatSignedAmount(tx.amount, tx.type)}
-                  </span>
-                </td>
-                <td className="px-5 py-4">
-                  <span
-                    className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold ${
-                      tx.type === 'income'
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
-                        : 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300'
-                    }`}
-                  >
-                    {tx.type}
-                  </span>
+                <td className="px-6 py-5">
+                  <div className="flex flex-col">
+                    <span className={`text-base font-black ${tx.type === 'income' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      {formatSignedAmount(tx.amount, tx.type)}
+                    </span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{tx.type}</span>
+                  </div>
                 </td>
                 {role === 'admin' && (
-                  <td className="px-5 py-4">
-                    <div className="flex gap-2">
+                  <td className="px-6 py-5">
+                    <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                       <button
                         onClick={() => onEdit(tx)}
-                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                        className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-blue-600 dark:hover:text-white"
+                        title="Edit Entry"
                       >
-                        Edit
+                        <Edit2 size={14} />
                       </button>
                       <button
                         onClick={() => onDelete(tx)}
-                        className="rounded-xl bg-rose-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-700"
+                        className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition hover:bg-rose-600 hover:text-white dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-600 dark:hover:text-white"
+                        title="Delete Entry"
                       >
-                        Delete
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </td>
@@ -112,60 +107,61 @@ export default function TransactionTable({ transactions, onEdit, onDelete }) {
         </table>
       </div>
 
-      <div className="grid gap-4 lg:hidden">
+      <div className="grid gap-6 lg:hidden">
         {transactions.map((tx) => (
           <div
             key={tx.id}
-            className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950/60"
+            className="premium-panel p-6"
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                   {formatDate(tx.date)}
                 </p>
-                <h3 className="mt-2 text-base font-semibold text-slate-900 dark:text-white">{tx.desc}</h3>
+                <h3 className="mt-2 text-lg font-black text-slate-900 dark:text-white">{tx.desc}</h3>
               </div>
-
               <span
-                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-semibold ${
+                className={`rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${
                   tx.type === 'income'
-                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
-                    : 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300'
+                    ? 'bg-emerald-500/10 text-emerald-500'
+                    : 'bg-rose-500/10 text-rose-500'
                 }`}
               >
                 {tx.type}
               </span>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex items-center justify-between">
               <span
-                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
+                className="inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-wider"
                 style={{
-                  background: `${CATEGORY_COLORS[tx.category] || '#6366f1'}20`,
+                  background: `${CATEGORY_COLORS[tx.category] || '#6366f1'}15`,
                   color: CATEGORY_COLORS[tx.category] || '#6366f1',
                 }}
               >
-                <span className="h-2 w-2 rounded-full" style={{ background: CATEGORY_COLORS[tx.category] || '#6366f1' }} />
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: CATEGORY_COLORS[tx.category] || '#6366f1' }} />
                 {tx.category}
               </span>
 
-              <span className={`text-lg font-bold ${tx.type === 'income' ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300'}`}>
+              <span className={`text-xl font-black ${tx.type === 'income' ? 'text-emerald-500' : 'text-rose-500'}`}>
                 {formatSignedAmount(tx.amount, tx.type)}
               </span>
             </div>
 
             {role === 'admin' && (
-              <div className="mt-4 flex gap-2">
+              <div className="mt-6 flex gap-3">
                 <button
                   onClick={() => onEdit(tx)}
-                  className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-slate-100 py-3 text-[11px] font-black uppercase tracking-widest text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                 >
+                  <Edit2 size={14} />
                   Edit
                 </button>
                 <button
                   onClick={() => onDelete(tx)}
-                  className="flex-1 rounded-2xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-700"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-rose-50 py-3 text-[11px] font-black uppercase tracking-widest text-rose-600 dark:bg-rose-500/10 dark:text-rose-400"
                 >
+                  <Trash2 size={14} />
                   Delete
                 </button>
               </div>
