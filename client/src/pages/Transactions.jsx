@@ -2,13 +2,16 @@ import { useMemo, useState } from 'react'
 import TransactionTable from '../components/transactions/TransactionTable'
 import FilterBar from '../components/transactions/FilterBar'
 import AddTransactionModal from '../components/transactions/AddTransactionModal'
+import DeleteConfirmationModal from '../components/transactions/DeleteConfirmationModal'
 import { useApp } from '../context/AppContext'
 import { fmt } from '../utils/calculations'
 
 export default function Transactions() {
-  const { transactions, filters, role } = useApp()
+  const { transactions, filters, role, deleteTransaction } = useApp()
   const [modalOpen, setModalOpen] = useState(false)
   const [editData, setEditData] = useState(null)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [txToDelete, setTxToDelete] = useState(null)
 
   const filtered = useMemo(() => {
     return transactions
@@ -46,6 +49,19 @@ export default function Transactions() {
   const openEdit = (tx) => {
     setEditData(tx)
     setModalOpen(true)
+  }
+
+  const handleDeleteClick = (tx) => {
+    setTxToDelete(tx)
+    setDeleteModalOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (txToDelete) {
+      await deleteTransaction(txToDelete.id)
+      setDeleteModalOpen(false)
+      setModalOpen(false)
+    }
   }
 
   return (
@@ -113,10 +129,22 @@ export default function Transactions() {
         </div>
 
         <FilterBar />
-        <TransactionTable transactions={filtered} onEdit={openEdit} />
+        <TransactionTable transactions={filtered} onEdit={openEdit} onDelete={handleDeleteClick} />
       </section>
 
-      <AddTransactionModal open={modalOpen} onClose={() => setModalOpen(false)} editData={editData} />
+      <AddTransactionModal 
+        open={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        editData={editData} 
+        onDelete={() => handleDeleteClick(editData)}
+      />
+
+      <DeleteConfirmationModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        transactionTitle={txToDelete?.desc}
+      />
     </div>
   )
 }

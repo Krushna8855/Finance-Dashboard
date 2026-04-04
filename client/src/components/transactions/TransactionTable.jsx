@@ -1,23 +1,8 @@
-import { useState } from 'react'
 import { useApp } from '../../context/AppContext'
 import { CATEGORY_COLORS, formatDate, formatSignedAmount } from '../../utils/calculations'
-import DeleteConfirmationModal from './DeleteConfirmationModal'
 
-export default function TransactionTable({ transactions, onEdit }) {
-  const { role, deleteTransaction, seedTransactions } = useApp()
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [txToDelete, setTxToDelete] = useState(null)
-
-  const handleDeleteClick = (tx) => {
-    setTxToDelete(tx)
-    setDeleteModalOpen(true)
-  }
-
-  const handleConfirmDelete = async () => {
-    if (txToDelete) {
-      await deleteTransaction(txToDelete.id)
-    }
-  }
+export default function TransactionTable({ transactions, onEdit, onDelete }) {
+  const { role, seedTransactions } = useApp()
 
   if (!transactions.length) {
     return (
@@ -113,7 +98,7 @@ export default function TransactionTable({ transactions, onEdit }) {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDeleteClick(tx)}
+                        onClick={() => onDelete(tx)}
                         className="rounded-xl bg-rose-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-rose-700"
                       >
                         Delete
@@ -178,7 +163,7 @@ export default function TransactionTable({ transactions, onEdit }) {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteClick(tx)}
+                  onClick={() => onDelete(tx)}
                   className="flex-1 rounded-2xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-700"
                 >
                   Delete
@@ -188,13 +173,6 @@ export default function TransactionTable({ transactions, onEdit }) {
           </div>
         ))}
       </div>
-
-      <DeleteConfirmationModal
-        open={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        transactionTitle={txToDelete?.desc}
-      />
     </div>
   )
 }
