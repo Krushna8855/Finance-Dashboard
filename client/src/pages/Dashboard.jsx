@@ -19,7 +19,7 @@ import {
 } from '../utils/calculations'
 
 export default function Dashboard() {
-  const { transactions, loading, error, role } = useApp()
+  const { transactions, loading, error, role, darkMode } = useApp()
   
   const hyperspeedOptions = {
     distortion: 'mountainDistortion',
@@ -118,7 +118,7 @@ export default function Dashboard() {
               glowRadius={50}
               glowColor="145 100 60"
               colors={['#10b981', '#34d399', '#059669']}
-              backgroundColor="rgba(15, 23, 42, 0.4)"
+              backgroundColor={darkMode ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.8)'}
               edgeSensitivity={40}
               fillOpacity={0.1}
               className="w-full"
@@ -196,7 +196,7 @@ export default function Dashboard() {
 
           {/* Detailed Charts */}
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <BorderGlow borderRadius={32} glowColor="217 91 60" colors={['#3b82f6', '#1d4ed8', '#1e40af']} backgroundColor="rgba(15, 23, 42, 0.4)" edgeSensitivity={50}>
+            <BorderGlow borderRadius={32} glowColor="217 91 60" colors={['#3b82f6', '#1d4ed8', '#1e40af']} backgroundColor={darkMode ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.8)'} edgeSensitivity={50}>
               <div className="p-6 sm:p-8">
                 <div className="mb-8">
                   <h3 className="section-title">Cash Flow Volatility</h3>
@@ -208,7 +208,7 @@ export default function Dashboard() {
               </div>
             </BorderGlow>
 
-            <BorderGlow borderRadius={32} glowColor="268 89 60" colors={['#8b5cf6', '#7c3aed', '#6d28d9']} backgroundColor="rgba(15, 23, 42, 0.4)" edgeSensitivity={50}>
+            <BorderGlow borderRadius={32} glowColor="268 89 60" colors={['#8b5cf6', '#7c3aed', '#6d28d9']} backgroundColor={darkMode ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.8)'} edgeSensitivity={50}>
               <div className="p-6 sm:p-8">
                 <div className="mb-8">
                   <h3 className="section-title">Expense Allocation</h3>

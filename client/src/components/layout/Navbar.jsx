@@ -11,7 +11,7 @@ export default function Navbar({ activePage, sidebarOpen, setSidebarOpen, onOpen
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 shadow-sm shadow-slate-200/40 backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-slate-900/75 dark:shadow-black/10">
-      <div className="relative mx-auto flex h-16 w-full max-w-none items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex h-16 w-full max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <button
             type="button"

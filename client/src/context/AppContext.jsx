@@ -110,7 +110,7 @@ export function AppProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('fin_darkMode')
     if (saved !== null) return JSON.parse(saved)
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    return true // Default to dark mode for new users
   })
 
   const [loading, setLoading] = useState(false)

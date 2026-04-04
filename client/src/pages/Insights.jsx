@@ -103,33 +103,33 @@ export default function Insights() {
       className="space-y-6 lg:space-y-10"
     >
       {/* Header Section */}
-      <section className="relative overflow-hidden rounded-[3rem] bg-slate-950 px-8 py-16 text-white shadow-2xl">
+      <section className="relative overflow-hidden rounded-[3rem] bg-slate-950 px-6 py-12 text-white shadow-2xl sm:px-10 sm:py-20">
         <div className="absolute inset-0 z-0 opacity-40">
           <Hyperspeed effectOptions={hyperspeedOptions} />
         </div>
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-900/60 to-indigo-950/80" />
-        <div className="relative z-20 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.3em] text-blue-400">
+        <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-900/70 via-slate-900/60 to-indigo-950/90" />
+        <div className="relative z-20 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.4em] text-blue-400">
               <Zap size={14} className="fill-current" />
               <span>Deep Intelligence Analysis</span>
             </div>
-            <h1 className="mt-4 text-4xl font-black tracking-tighter sm:text-5xl xl:text-7xl">
+            <h1 className="mt-6 text-4xl font-black tracking-tighter sm:text-6xl xl:text-7xl">
               Financial <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">transcendence.</span>
             </h1>
-            <p className="mt-8 text-sm font-medium leading-relaxed text-slate-300 sm:text-base lg:text-lg">
+            <p className="mt-8 max-w-xl text-sm font-medium leading-[2] text-slate-300 sm:text-base lg:text-lg">
               Our neural engine decodes your micro-activity to identify vectors for wealth-building and operational efficiency.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 lg:w-1/3">
-            <div className="premium-panel border-white/5 bg-white/5 p-6 backdrop-blur-3xl transition-transform hover:scale-105">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Savings Rate</p>
-              <p className="mt-2 text-4xl font-black text-emerald-400">{metrics.savingsRate}%</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:flex lg:flex-wrap lg:justify-end">
+            <div className="premium-panel min-w-[180px] border-white/5 bg-white/5 p-6 backdrop-blur-3xl transition-transform hover:scale-105">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Savings Rate</p>
+              <p className="mt-2 text-3xl font-black text-emerald-400 sm:text-4xl">{metrics.savingsRate}%</p>
             </div>
-            <div className="premium-panel border-white/5 bg-white/5 p-6 backdrop-blur-3xl transition-transform hover:scale-105">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Liquidity</p>
-              <p className="mt-2 text-4xl font-black text-blue-400 text-nowrap">{fmt(metrics.balance)}</p>
+            <div className="premium-panel min-w-[220px] border-white/5 bg-white/5 p-6 backdrop-blur-3xl transition-transform hover:scale-105">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Liquidity</p>
+              <p className="mt-2 text-3xl font-black text-blue-400 sm:text-4xl">{fmt(metrics.balance)}</p>
             </div>
           </div>
         </div>
